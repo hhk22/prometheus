@@ -38,3 +38,4 @@ spec:
 
 metirc: `node_memory_Active_bytes{node="w2-k8s"}`
 
+![img](https://github.com/hhk22/prometheus/blob/master/images/node_exporter_memory_surge.png)
