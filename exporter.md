@@ -39,3 +39,9 @@ spec:
 metirc: `node_memory_Active_bytes{node="w2-k8s"}`
 
 ![img](https://github.com/hhk22/prometheus/blob/master/images/node_exporter_memory_surge.png)
+
+> stress --cpu 2 --timeout 300s
+
+metric: `node_cpu_seconds_total{node="w2-k8s", mode="user"}`
+
+![img](https://github.com/hhk22/prometheus/blob/master/images/node_exporter_cpu_surge.png)
