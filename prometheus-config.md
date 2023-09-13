@@ -44,3 +44,60 @@ data:
 
 ### Alert
 
+1. Prometheus를 설치할때, alertManager가 설치되어있어야함. 
+2. Slack 에서 수신WebHook가 설치되어있어야함. 
+
+```
+data:
+  alerting_rules.yml: |
+    groups:
+    - name: nginx-status.alert
+      rules:
+      - alert: '[P2] NginxDown'
+        for: 30s
+        annotations:
+          title: 'Nginx pod down unexpectedly'
+          description: 'Nginx가 비정상 종료됨. 빠른 조치 필요!'
+          summary: '[P2, warnning]: Nginx pod shutdown unexpectedly.'
+        expr: |
+          (sum(nginx_up) OR vector(0)) == 0
+```
+
+> kubectl patch -n monitoring prometheus-server --patch-file \<patch-file\>
+
+
+```
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 10m
+      slack_api_url: Slack-URL
+    receivers:
+    - name: default-receiver
+    - name: slack
+      slack_configs:
+      - channel: #development
+        send_resolved: true
+        title: '[{{.Status | toUpper}}] {{ .CommonLabels.alertname }}'
+        text: |
+          *Description:* {{ .CommonAnnotations.description }}
+    route:
+      group_interval: 1m
+      group_wait: 10s
+      receiver: slack
+      repeat_interval: 5m
+```
+
+> kubectl patch cm prometheus-alertmanager -n monitoring --patch-file \<patch-file\>
+
+> kubectl scale deployment nginx --replicas 0  
+
+----- alert to slack ------
+
+> kubectl scale deployment nginx --replicas 2
+
+
+
+
+
+
